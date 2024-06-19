@@ -203,9 +203,25 @@ export class PruebaCanvasComponent {
   }
 
   private updateModelTexture() {
+
     if (this.canvas) {
-      //llama a una funcion del componente escena que se encarga de actulizar la textura 
-      this.escenaComponent.updateModelTexture(this.canvas.nativeElement);
+    // Crear un canvas temporal
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    
+    if (tempCtx) {
+      // Establecer el tamaño del canvas temporal
+      tempCanvas.width = this.canvas.nativeElement.width;
+      tempCanvas.height = this.canvas.nativeElement.height;
+
+      // Dibujar la imagen en el canvas temporal
+      const width = this.image.width * this.scale;
+      const height = this.image.height * this.scale;
+      tempCtx.drawImage(this.image, this.pos.x, this.pos.y, width, height);
+
+      // Llamar a la función del componente escena con el canvas temporal
+      this.escenaComponent.updateModelTexture(tempCanvas);
     }
+  }
   }
 }
