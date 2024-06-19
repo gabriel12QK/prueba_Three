@@ -8,153 +8,6 @@ import { EscenaComponent } from '../escena/escena.component';
   //providers:[EscenaComponent]
 
 })
-// export class PruebaCanvasComponent {
-
-//   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>|null=null;
-//   private ctx: CanvasRenderingContext2D|null=null;
-//   private image = new Image();
-//   private imageUrl: string | null = null;
-//   private scale = 1;
-//   private pos = { x: 0, y: 0 };
-//   private draggingCorner: string | null = null;
-//   private controlSize = 10;
-
-//   constructor(
-//     private escenaComponent: EscenaComponent
-//   ) { }
-
-//   ngOnInit() {
-//     this.ctx = this.canvas!.nativeElement.getContext('2d');
-//   }
-
-//   onFileChange(event: any) {
-//     const reader = new FileReader();
-//     reader.onload = (e: any) => {
-//       this.imageUrl = e.target.result;
-//       this.image.src = this.imageUrl!;
-//       this.image.onload = () => this.fitImageToCanvas();
-//     };
-//     reader.readAsDataURL(event.target.files[0]);
-//   }
-
-//   private fitImageToCanvas() {
-//     const canvas = this.canvas!.nativeElement;
-//     const canvasAspect = canvas!.width / canvas.height;
-//     const imageAspect = this.image.width / this.image.height;
-
-//     if (imageAspect > canvasAspect) {
-//       this.scale = canvas.width / this.image.width;
-//     } else {
-//       this.scale = canvas.height / this.image.height;
-//     }
-
-//     this.pos.x = (canvas.width - this.image.width * this.scale) / 2;
-//     this.pos.y = (canvas.height - this.image.height * this.scale) / 2;
-//     this.drawImage();
-//   }
-
-//   private drawImage() {
-//     const canvas = this.canvas!.nativeElement;
-//     this.ctx!.clearRect(0, 0, canvas.width, canvas.height);
-//     const width = this.image.width * this.scale;
-//     const height = this.image.height * this.scale;
-//     this.ctx!.drawImage(this.image, this.pos.x, this.pos.y, width, height);
-//     this.drawControls();
-//   }
-
-//   private drawControls() {
-//     const canvas = this.canvas!.nativeElement;
-//     const width = this.image.width * this.scale;
-//     const height = this.image.height * this.scale;
-  
-//     // Top-left
-//     this.drawControlPoint(this.pos.x, this.pos.y);
-  
-//     // Top-right
-//     this.drawControlPoint(this.pos.x + width, this.pos.y);
-  
-//     // Bottom-left
-//     this.drawControlPoint(this.pos.x, this.pos.y + height);
-  
-//     // Bottom-right
-//     this.drawControlPoint(this.pos.x + width, this.pos.y + height);
-//   }
-  
-//   private drawControlPoint(x: number, y: number) {
-//     this.ctx!.fillStyle = 'blue';
-//     this.ctx!.fillRect(x - this.controlSize / 2, y - this.controlSize / 2, this.controlSize, this.controlSize);
-//   }
-
- 
-
-//   @HostListener('mousedown', ['$event'])
-//   onMouseDown(event: MouseEvent) {
-//     const corner = this.getCornerUnderMouse(event.offsetX, event.offsetY);
-//     if (corner) {
-//       this.draggingCorner = corner;
-//       return;
-//     }
-  
-//     const onMouseMove = (e: MouseEvent) => {
-//       if (this.draggingCorner) {
-//         const offsetX = e.offsetX - event.offsetX;
-//         const offsetY = e.offsetY - event.offsetY;
-//         switch (this.draggingCorner) {
-//           case 'top-left':
-//             this.pos.x += offsetX;
-//             this.pos.y += offsetY;
-//             this.scale -= offsetX / this.image.width;
-//             break;
-//           case 'top-right':
-//             this.pos.y += offsetY;
-//             this.scale += offsetX / this.image.width;
-//             break;
-//           case 'bottom-left':
-//             this.pos.x += offsetX;
-//             this.scale -= offsetX / this.image.width;
-//             break;
-//           case 'bottom-right':
-//             this.scale += offsetX / this.image.width;
-//             break;
-//         }
-//         this.drawImage();
-//       }
-//     };
-  
-//     const onMouseUp = () => {
-//       this.draggingCorner = null;
-//       window.removeEventListener('mousemove', onMouseMove);
-//       window.removeEventListener('mouseup', onMouseUp);
-//       this.updateModelTexture();
-//     };
-  
-//     window.addEventListener('mousemove', onMouseMove);
-//     window.addEventListener('mouseup', onMouseUp);
-//   }
-
-//   private getCornerUnderMouse(x: number, y: number): string | null {
-//     const width = this.image.width * this.scale;
-//     const height = this.image.height * this.scale;
-
-//     if (this.isPointInControl(x, y, this.pos.x, this.pos.y)) return 'top-left';
-//     if (this.isPointInControl(x, y, this.pos.x + width, this.pos.y)) return 'top-right';
-//     if (this.isPointInControl(x, y, this.pos.x, this.pos.y + height)) return 'bottom-left';
-//     if (this.isPointInControl(x, y, this.pos.x + width, this.pos.y + height)) return 'bottom-right';
-
-//     return null;
-//   }
-
-//   private isPointInControl(px: number, py: number, cx: number, cy: number): boolean {
-//     return px >= cx - this.controlSize / 2 && px <= cx + this.controlSize / 2 &&
-//       py >= cy - this.controlSize / 2 && py <= cy + this.controlSize / 2;
-//   }
-
-//   private updateModelTexture() {
-//     if (this.canvas) {
-//       this.escenaComponent.updateModelTexture(this.canvas.nativeElement);
-//     }
-//   }
-// }
 export class PruebaCanvasComponent {
   @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement> | null = null;
   private ctx: CanvasRenderingContext2D | null = null;
@@ -181,6 +34,7 @@ export class PruebaCanvasComponent {
     reader.readAsDataURL(event.target.files[0]);
   }
 
+  //evalua el tamaño del canvas y de la imagen los compara y los escala para que la imagen no sobrepase al canvas
   private fitImageToCanvas() {
     const canvas = this.canvas!.nativeElement;
     const canvasAspect = canvas.width / canvas.height;
@@ -199,29 +53,45 @@ export class PruebaCanvasComponent {
 
   private drawImage() {
     const canvas = this.canvas!.nativeElement;
+    //limpia el canvas
     this.ctx!.clearRect(0, 0, canvas.width, canvas.height);
+    //calcula el alto y ancho de la imagen
     const width = this.image.width * this.scale;
     const height = this.image.height * this.scale;
+    //agrega la imagen al canvas
     this.ctx!.drawImage(this.image, this.pos.x, this.pos.y, width, height);
+    //llama a la funcion de dibujar punto
     this.drawControls();
+    //llama a la funcion que remplaza la textura del modelo 3d
     this.updateModelTexture();
   }
 
   private drawControls() {
     const width = this.image.width * this.scale;
     const height = this.image.height * this.scale;
+    const middleX = this.pos.x + width / 2;
+    const middleY = this.pos.y + height / 2;
 
-    this.drawControlPoint(this.pos.x, this.pos.y);
-    this.drawControlPoint(this.pos.x + width, this.pos.y);
-    this.drawControlPoint(this.pos.x, this.pos.y + height);
-    this.drawControlPoint(this.pos.x + width, this.pos.y + height);
+    // dibuja la esquinas mediante la posicion
+    this.drawControlPoint(this.pos.x, this.pos.y); // top-left
+    this.drawControlPoint(this.pos.x + width, this.pos.y); // top-right
+    this.drawControlPoint(this.pos.x, this.pos.y + height); // bottom-left
+    this.drawControlPoint(this.pos.x + width, this.pos.y + height); // bottom-right
+
+    // dibuja los puntos mdeios mediante la posicion
+    this.drawControlPoint(middleX, this.pos.y); // middle-top
+    this.drawControlPoint(this.pos.x, middleY); // middle-left
+    this.drawControlPoint(this.pos.x + width, middleY); // middle-right
+    this.drawControlPoint(middleX, this.pos.y + height); // middle-bottom
   }
 
   private drawControlPoint(x: number, y: number) {
+    // le da d¿forma y color a los puntos
     this.ctx!.fillStyle = 'blue';
     this.ctx!.fillRect(x - this.controlSize / 2, y - this.controlSize / 2, this.controlSize, this.controlSize);
   }
 
+  //evento que se amntine escuchando cuando se preciona el click
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent) {
     const corner = this.getCornerUnderMouse(event.offsetX, event.offsetY);
@@ -231,6 +101,7 @@ export class PruebaCanvasComponent {
     }
     const startX = event.offsetX - this.pos.x;
     const startY = event.offsetY - this.pos.y;
+    // calcula las posiciones en las que se encuentra el mouse para llamar a la funcion que redibuje y escale la imagen
     const onMouseMove = (e: MouseEvent) => {
       this.pos.x = e.offsetX - startX;
       this.pos.y = e.offsetY - startY;
@@ -247,6 +118,7 @@ export class PruebaCanvasComponent {
   @HostListener('mousemove', ['$event'])
   onMouseMove(event: MouseEvent) {
     if (this.draggingCorner) {
+      // llama a la funcion que escala la imagen
       this.resizeImage(event.offsetX, event.offsetY);
     }
   }
@@ -255,7 +127,7 @@ export class PruebaCanvasComponent {
   onMouseUp(event: MouseEvent) {
     this.draggingCorner = null;
   }
-
+//esta funcion se usa para identificar que punto de control es el que se pulsa
   private getCornerUnderMouse(x: number, y: number) {
     const width = this.image.width * this.scale;
     const height = this.image.height * this.scale;
@@ -265,14 +137,21 @@ export class PruebaCanvasComponent {
     if (this.isPointInControl(x, y, this.pos.x, this.pos.y + height)) return 'bottom-left';
     if (this.isPointInControl(x, y, this.pos.x + width, this.pos.y + height)) return 'bottom-right';
 
+    const middleX = this.pos.x + width / 2;
+    const middleY = this.pos.y + height / 2;
+    if (this.isPointInControl(x, y, middleX, this.pos.y)) return 'middle-top';
+    if (this.isPointInControl(x, y, this.pos.x, middleY)) return 'middle-left';
+    if (this.isPointInControl(x, y, this.pos.x + width, middleY)) return 'middle-right';
+    if (this.isPointInControl(x, y, middleX, this.pos.y + height)) return 'middle-bottom';
+
     return null;
   }
-
+//segun mi tutor esto evalua si el puntero del mouse se encuentra sobre uno de los punto de control para empezar a renderizar puesto que el evento que s eusa par aidentificar los click siempre esta escuhando
   private isPointInControl(px: number, py: number, cx: number, cy: number): boolean {
     return px >= cx - this.controlSize / 2 && px <= cx + this.controlSize / 2 &&
-           py >= cy - this.controlSize / 2 && py <= cy + this.controlSize / 2;
+      py >= cy - this.controlSize / 2 && py <= cy + this.controlSize / 2;
   }
-
+// esta funcion identifica cual punto se pulso y empieza a escalar la imagen segun la posicion y las dimensiones de la imagen
   private resizeImage(mouseX: number, mouseY: number) {
     const width = this.image.width * this.scale;
     const height = this.image.height * this.scale;
@@ -300,17 +179,32 @@ export class PruebaCanvasComponent {
         newWidth = mouseX - this.pos.x;
         newHeight = mouseY - this.pos.y;
         break;
+      case 'middle-top':
+        newHeight = height + (this.pos.y - mouseY);
+        this.pos.y = mouseY;
+        break;
+      case 'middle-left':
+        newWidth = width + (this.pos.x - mouseX);
+        this.pos.x = mouseX;
+        break;
+      case 'middle-right':
+        newWidth = mouseX - this.pos.x;
+        break;
+      case 'middle-bottom':
+        newHeight = mouseY - this.pos.y;
+        break;
     }
 
     const newScale = Math.min(newWidth / this.image.width, newHeight / this.image.height);
     if (newScale > 0) {
       this.scale = newScale;
-      this.drawImage();
+      this.drawImage(); // Redibujar completamente la imagen
     }
   }
 
   private updateModelTexture() {
     if (this.canvas) {
+      //llama a una funcion del componente escena que se encarga de actulizar la textura 
       this.escenaComponent.updateModelTexture(this.canvas.nativeElement);
     }
   }
