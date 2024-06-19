@@ -153,6 +153,7 @@ export class EscenaComponent implements AfterViewInit {
 
   updateModelTexture(canvas: HTMLCanvasElement): void {
     if (this.model) {
+      console.log(this.model);
       const texture = new THREE.CanvasTexture(canvas);
       const capafoto = this.model.getObjectByName('CapaFoto') as THREE.Mesh;
       if (capafoto) {
@@ -162,4 +163,5 @@ export class EscenaComponent implements AfterViewInit {
       }
     }
   }
+
 }
