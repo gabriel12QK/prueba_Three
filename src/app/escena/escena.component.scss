@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+}
+
+.scena, .GUI {
+    flex: 1;
+}
+
+.scena {
+    background-color: #f0f0f0; /* Color de fondo opcional para visualización */
+}
+
+.GUI {
+    background-color: #e0e0e0; /* Color de fondo opcional para visualización */
+    padding: 10px;
+}
+.canvas-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    border: 1px solid #000;
+  }
+  
+  canvas {
+    border: 1px solid #ccc;
+  }
