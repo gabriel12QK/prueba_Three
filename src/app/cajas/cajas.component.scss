@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+}
+
+.scena, .GUI {
+    flex: 1;
+}
+
+.scena {
+    background-color: #f0f0f0; /* Color de fondo opcional para visualización */
+}

@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { EscenaComponent } from './escena/escena.component';
 import { PruebaCanvasComponent } from './prueba-canvas/prueba-canvas.component';
 import { FormsModule } from '@angular/forms';
+import { CajasComponent } from './cajas/cajas.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EscenaComponent,
-    PruebaCanvasComponent
+    PruebaCanvasComponent,
+    CajasComponent
   ],
   imports: [
     BrowserModule,
