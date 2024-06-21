@@ -17,10 +17,13 @@ export class CajasComponent implements AfterViewInit {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private model: THREE.Object3D | null = null;
-  private textMesh: THREE.Mesh | null = null;
+  private textMeshes: THREE.Mesh[] = [];
   private textPlane: THREE.Mesh | null = null;
   private fontLoader = new FontLoader();
-  private maxTextWidth = 8; // Adjust this value to your needs
+  private maxTextWidth = 8; // ancho del plano para texto
+  private maxLines = 3; // numero maximo de lineas a ocupar
+  private lineHeight = 1.2; // alto de las lineas
+  private textSize = 0.5; // Tamaño del texto
 
   ngAfterViewInit(): void {
     this.initThreeJS();
@@ -76,47 +79,78 @@ export class CajasComponent implements AfterViewInit {
   }
 
   createTextPlane(): void {
-    const planeGeometry = new THREE.PlaneGeometry(this.maxTextWidth, 5);
+    const planeGeometry = new THREE.PlaneGeometry(this.maxTextWidth, this.maxLines * this.lineHeight);
     const planeMaterial = new THREE.MeshBasicMaterial({
-      color: 'blue',
-      transparent: false,
+      color: 0xffffff,
+      transparent: true,
       opacity: 0.5
     });
     this.textPlane = new THREE.Mesh(planeGeometry, planeMaterial);
-    this.textPlane.position.set(0, 2, 0);
+    this.textPlane.position.set(0, 3, 0);
     this.scene.add(this.textPlane);
   }
 
   updateText(newText: string): void {
-    if (this.textMesh) {
-      this.scene.remove(this.textMesh);
-    }
+    // Remove previous text meshes
+    this.textMeshes.forEach(mesh => this.scene.remove(mesh));
+    this.textMeshes = [];
 
     this.fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
-      const textGeometry = new TextGeometry(newText, {
-        font: font,
-        size: 1,
-        height: 0.1,
-        curveSegments: 12,
+      const lines = this.breakTextIntoLines(newText, font, this.maxTextWidth);
+
+      lines.forEach((line, index) => {
+        const textGeometry = new TextGeometry(line, {
+          font: font,
+          size: this.textSize, // Adjust text size here
+          height: 0.1,
+          curveSegments: 12,
+        });
+
+        const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+        textGeometry.computeBoundingBox();
+        const textWidth = textGeometry.boundingBox!.max.x - textGeometry.boundingBox!.min.x;
+
+        // Scale text if it exceeds the max width
+        if (textWidth > this.maxTextWidth) {
+          const scale = this.maxTextWidth / textWidth;
+          textMesh.scale.set(scale, scale, scale);
+        }
+
+        // Position the text mesh within the plane
+        textMesh.position.set(-this.maxTextWidth / 2, -index * this.lineHeight, 4);
+        this.textPlane!.add(textMesh);
+        this.textMeshes.push(textMesh);
       });
-
-      const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
-      
-      // Calculate bounding box of the text
-      textGeometry.computeBoundingBox();
-      const textWidth = textGeometry.boundingBox!.max.x - textGeometry.boundingBox!.min.x;
-
-      // Scale text if it exceeds the max width
-      if (textWidth > this.maxTextWidth) {
-        const scale = this.maxTextWidth / textWidth;
-        this.textMesh.scale.set(scale, scale, scale);
-      }
-
-      // Position the text mesh within the plane
-      this.textMesh.position.set(-this.maxTextWidth / 2, 0, 4);
-      this.textPlane!.add(this.textMesh);
     });
+  }
+
+  breakTextIntoLines(text: string, font: any, maxWidth: number): string[] {
+    const lines: string[] = [];
+    const words = text.split(' ');
+    let currentLine = '';
+
+    words.forEach(word => {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const testGeometry = new TextGeometry(testLine, { font: font, size: this.textSize, height: 0.1, curveSegments: 12 });
+      testGeometry.computeBoundingBox();
+      const testWidth = testGeometry.boundingBox!.max.x - testGeometry.boundingBox!.min.x;
+
+      if (testWidth > maxWidth) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    });
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    // Limit the number of lines
+    return lines.slice(0, this.maxLines);
   }
 
   onTextChange(event: Event): void {
