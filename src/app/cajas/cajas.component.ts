@@ -12,18 +12,19 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 })
 export class CajasComponent implements AfterViewInit {
   @ViewChild('rendererContainer', { static: true }) rendererContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('textInput', { static: true }) textInput!: ElementRef<HTMLTextAreaElement>;
 
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private model: THREE.Object3D | null = null;
-  private textMeshes: THREE.Mesh[] = [];
   private textPlane: THREE.Mesh | null = null;
+  private textMeshes: THREE.Mesh[] = [];
   private fontLoader = new FontLoader();
   private maxTextWidth = 8; // ancho del plano para texto
   private maxLines = 3; // numero maximo de lineas a ocupar
-  private lineHeight = 1.2; // alto de las lineas
-  private textSize = 0.5; // Tamaño del texto
+  private lineHeight = 1; // alto de las lineas
+  private baseTextSize = 0.5; // Tamaño base del texto
 
   ngAfterViewInit(): void {
     this.initThreeJS();
@@ -86,8 +87,13 @@ export class CajasComponent implements AfterViewInit {
       opacity: 0.5
     });
     this.textPlane = new THREE.Mesh(planeGeometry, planeMaterial);
-    this.textPlane.position.set(0, 3, 0);
+    this.textPlane.position.set(0, 4, 0);
     this.scene.add(this.textPlane);
+  }
+
+  onUpdateText(): void {
+    const newText = this.textInput.nativeElement.value;
+    this.updateText(newText);
   }
 
   updateText(newText: string): void {
@@ -98,10 +104,13 @@ export class CajasComponent implements AfterViewInit {
     this.fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
       const lines = this.breakTextIntoLines(newText, font, this.maxTextWidth);
 
+      const scaleFactor = Math.min(1, this.maxLines / lines.length);
+      const textSize = this.baseTextSize * scaleFactor;
+
       lines.forEach((line, index) => {
         const textGeometry = new TextGeometry(line, {
           font: font,
-          size: this.textSize, // Adjust text size here
+          size: textSize,
           height: 0.1,
           curveSegments: 12,
         });
@@ -115,14 +124,20 @@ export class CajasComponent implements AfterViewInit {
         // Scale text if it exceeds the max width
         if (textWidth > this.maxTextWidth) {
           const scale = this.maxTextWidth / textWidth;
-          textMesh.scale.set(scale, scale, scale);
+          textMesh.scale.set(scale * textSize / this.baseTextSize, scale * textSize / this.baseTextSize, 1);
+        } else {
+          textMesh.scale.set(textSize / this.baseTextSize, textSize / this.baseTextSize, 1);
         }
 
         // Position the text mesh within the plane
-        textMesh.position.set(-this.maxTextWidth / 2, -index * this.lineHeight, 4);
+        textMesh.position.set(-this.maxTextWidth / 2, -index * this.lineHeight * scaleFactor, 3.5);
         this.textPlane!.add(textMesh);
         this.textMeshes.push(textMesh);
       });
+
+      // Adjust text plane size based on the content
+      const planeHeight = Math.min(this.maxLines, lines.length) * this.lineHeight * scaleFactor;
+      this.textPlane!.geometry = new THREE.PlaneGeometry(this.maxTextWidth, planeHeight);
     });
   }
 
@@ -133,7 +148,7 @@ export class CajasComponent implements AfterViewInit {
 
     words.forEach(word => {
       const testLine = currentLine ? `${currentLine} ${word}` : word;
-      const testGeometry = new TextGeometry(testLine, { font: font, size: this.textSize, height: 0.1, curveSegments: 12 });
+      const testGeometry = new TextGeometry(testLine, { font: font, size: this.baseTextSize, height: 0.1, curveSegments: 12 });
       testGeometry.computeBoundingBox();
       const testWidth = testGeometry.boundingBox!.max.x - testGeometry.boundingBox!.min.x;
 
@@ -151,11 +166,5 @@ export class CajasComponent implements AfterViewInit {
 
     // Limit the number of lines
     return lines.slice(0, this.maxLines);
-  }
-
-  onTextChange(event: Event): void {
-    const input = event.target as HTMLTextAreaElement;
-    const newText = input.value;
-    this.updateText(newText);
   }
 }
