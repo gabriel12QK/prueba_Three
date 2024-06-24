@@ -10,6 +10,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
   templateUrl: './cajas.component.html',
   styleUrls: ['./cajas.component.scss']
 })
+// private textMeshes: THREE.Mesh[] = [];
 export class CajasComponent implements AfterViewInit {
   @ViewChild('rendererContainer', { static: true }) rendererContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('textInput', { static: true }) textInput!: ElementRef<HTMLTextAreaElement>;
@@ -23,8 +24,8 @@ export class CajasComponent implements AfterViewInit {
   private fontLoader = new FontLoader();
   private maxTextWidth = 8; // ancho del plano para texto
   private maxLines = 3; // numero maximo de lineas a ocupar
-  private lineHeight = 1; // alto de las lineas
-  private baseTextSize = 0.5; // Tamaño base del texto
+  private lineHeight = 1.2; // alto de las lineas
+  private baseTextSize = 1; // Tamaño base del texto
 
   ngAfterViewInit(): void {
     this.initThreeJS();
@@ -96,21 +97,66 @@ export class CajasComponent implements AfterViewInit {
     this.updateText(newText);
   }
 
+  // updateText(newText: string): void {
+  //   // Remove previous text meshes
+  //   this.textMeshes.forEach(mesh => this.textPlane!.remove(mesh));
+  //   this.textMeshes = [];
+
+  //   this.fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+  //     const lines = this.breakTextIntoLines(newText, font, this.maxTextWidth);
+
+  //     const scaleFactor = Math.min(1, this.maxLines / lines.length);
+  //     const textSize = this.baseTextSize * scaleFactor;
+
+  //     lines.forEach((line, index) => {
+  //       const textGeometry = new TextGeometry(line, {
+  //         font: font,
+  //         size: textSize,
+  //         height: 0.1,
+  //         curveSegments: 12,
+  //       });
+
+  //       const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  //       const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+  //       textGeometry.computeBoundingBox();
+  //       const textWidth = textGeometry.boundingBox!.max.x - textGeometry.boundingBox!.min.x;
+
+  //       // Scale text if it exceeds the max width
+  //       if (textWidth > this.maxTextWidth) {
+  //         const scale = this.maxTextWidth / textWidth;
+  //         textMesh.scale.set(scale * textSize / this.baseTextSize, scale * textSize / this.baseTextSize, 1);
+  //       } else {
+  //         textMesh.scale.set(textSize / this.baseTextSize, textSize / this.baseTextSize, 1);
+  //       }
+
+  //       // Position the text mesh within the plane
+  //       textMesh.position.set(-this.maxTextWidth / 2, -index * this.lineHeight * scaleFactor, 3.5);
+  //       this.textPlane!.add(textMesh);
+  //       this.textMeshes.push(textMesh);
+  //     });
+
+  //     // Adjust text plane size based on the content
+  //     const planeHeight = Math.min(this.maxLines, lines.length) * this.lineHeight * scaleFactor;
+  //     this.textPlane!.geometry.dispose(); // Dispose old geometry to avoid memory leaks
+  //     this.textPlane!.geometry = new THREE.PlaneGeometry(this.maxTextWidth, planeHeight);
+  //   });
+  // }
   updateText(newText: string): void {
     // Remove previous text meshes
-    this.textMeshes.forEach(mesh => this.scene.remove(mesh));
+    this.textMeshes.forEach(mesh => this.textPlane!.remove(mesh));
     this.textMeshes = [];
 
     this.fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
       const lines = this.breakTextIntoLines(newText, font, this.maxTextWidth);
 
       const scaleFactor = Math.min(1, this.maxLines / lines.length);
-      const textSize = this.baseTextSize * scaleFactor;
+      const baseSize = this.baseTextSize;
 
       lines.forEach((line, index) => {
         const textGeometry = new TextGeometry(line, {
           font: font,
-          size: textSize,
+          size: baseSize,
           height: 0.1,
           curveSegments: 12,
         });
@@ -124,9 +170,9 @@ export class CajasComponent implements AfterViewInit {
         // Scale text if it exceeds the max width
         if (textWidth > this.maxTextWidth) {
           const scale = this.maxTextWidth / textWidth;
-          textMesh.scale.set(scale * textSize / this.baseTextSize, scale * textSize / this.baseTextSize, 1);
+          textMesh.scale.set(scale * baseSize, scale * baseSize, 1);
         } else {
-          textMesh.scale.set(textSize / this.baseTextSize, textSize / this.baseTextSize, 1);
+          textMesh.scale.set(baseSize, baseSize, 1);
         }
 
         // Position the text mesh within the plane
@@ -137,9 +183,11 @@ export class CajasComponent implements AfterViewInit {
 
       // Adjust text plane size based on the content
       const planeHeight = Math.min(this.maxLines, lines.length) * this.lineHeight * scaleFactor;
+      this.textPlane!.geometry.dispose(); // Dispose old geometry to avoid memory leaks
       this.textPlane!.geometry = new THREE.PlaneGeometry(this.maxTextWidth, planeHeight);
     });
   }
+
 
   breakTextIntoLines(text: string, font: any, maxWidth: number): string[] {
     const lines: string[] = [];
