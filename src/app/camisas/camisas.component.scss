@@ -1,0 +1,37 @@
+.shirt-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px; /* Ajusta la altura según tus necesidades */
+  }
+  
+  .shirt {
+    width: 400px; /* Ajusta el tamaño de la camisa */
+    height: 600px; /* Ajusta el tamaño de la camisa */
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .logo-area {
+    position: absolute;
+    top: 20%; /* Ajusta la posición del logo verticalmente */
+    left: 30%; /* Ajusta la posición del logo horizontalmente */
+    width: 40%; /* Ajusta el tamaño del área del logo */
+    height: 40%; /* Ajusta el tamaño del área del logo */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  input[type="file"] {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+  

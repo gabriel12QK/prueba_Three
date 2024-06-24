@@ -1,0 +1,9 @@
+<div class="shirt-container">
+    <!-- Imagen de fondo que representa la camisa -->
+    <div class="shirt" [style.backgroundImage]="'url(' + shirtImageUrl + ')'">
+      <!-- Área para cargar la imagen (logo) -->
+      <div class="logo-area" *ngIf="logoImageUrl" [style.backgroundImage]="'url(' + logoImageUrl + ')'"></div>
+      <input type="file" (change)="onFileSelected($event)">
+    </div>
+  </div>
+  

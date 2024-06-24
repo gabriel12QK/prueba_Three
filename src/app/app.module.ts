@@ -7,13 +7,15 @@ import { EscenaComponent } from './escena/escena.component';
 import { PruebaCanvasComponent } from './prueba-canvas/prueba-canvas.component';
 import { FormsModule } from '@angular/forms';
 import { CajasComponent } from './cajas/cajas.component';
+import { CamisasComponent } from './camisas/camisas.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EscenaComponent,
     PruebaCanvasComponent,
-    CajasComponent
+    CajasComponent,
+    CamisasComponent
   ],
   imports: [
     BrowserModule,

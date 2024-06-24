@@ -83,7 +83,7 @@ export class EscenaComponent implements AfterViewInit {
       const texture = new THREE.CanvasTexture(canvas);
       const capafoto = this.model.getObjectByName('CapaFoto') as THREE.Mesh;
       if (capafoto) {
-        capafoto.material = new THREE.MeshBasicMaterial({ map: texture });
+        capafoto.material = new THREE.MeshBasicMaterial({ map: texture, });
         texture.flipY=false;
         texture.needsUpdate = true;
       }
