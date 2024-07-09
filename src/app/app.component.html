@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <title>Document</title>
 </head>
 <body>
   <h1>prueba</h1>
-  <!-- <app-prueba-canvas></app-prueba-canvas> -->
-   <!-- <app-escena></app-escena> -->
-  <!-- <app-cajas></app-cajas> -->
-   <app-camisas></app-camisas>
+ <ul>
+  <li>
+    <a routerLink="cajas">Modelo Camisa</a>
+  </li>
+  <li>
+    <a routerLink="taza">Modelo Taza</a>
+  </li>
+  <li>
+    <a routerLink="camisa">Modelo Caja</a>
+  </li>
+</ul>
+<div style="padding: 25px;">
+  <router-outlet></router-outlet>
+</div>
 </body>
 </html>
